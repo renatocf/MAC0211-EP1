@@ -3,7 +3,7 @@ global seleciona_armstrong
 extern fopen
 extern fclose
 extern fscanf
-extern printf
+extern fprintf
 
 ;_calcula: retorna 0 se não for,e 1 se for
 
@@ -25,44 +25,62 @@ seleciona_armstrong:
     ; mov eax,
 
     ; Idêntico ao fopen(file_name, file_mode)
-    push    file_mode
+    push    read_mode
     push    file_name
     call    fopen
+    mov     [fpi], eax ;
     add     esp,8
 
+    ; Idêntico ao fopen(file_name, file_mode)
+    push    write_mode
+    push    out_name
+    call    fopen
+    mov     [fpo], eax ;
+    add     esp,8
+    
+    mov     eax,[ebp+o_pos]
+    mov     DWORD [o_name],eax
+    
+    mov     eax,[ebp+i_pos]
+    mov     DWORD [i_name],eax
+    
     ; Ponteiro para uma estruct *FILE vai ser retornado em EAX.
     ; add     esp, 8   ; libera o espaço usado pelos parametros de fopen
-    mov     [fp], eax ;
 
     ; Leituras dos numeros pelo fscanf(FILE* stream, const char * format,...)
-       
-    ; push DWORD [numero]
-    ; push tipolido
-    ; push DWORD [fp]
-    ; ; mov    DWORD eax, numero
-    ; ; push   eax
-    ; ; mov    eax, tipolido
-    ; ; push   eax
-    ; ; mov    eax, [fp]
-    ; ; push   eax
-    ; call   fscanf 
-    ; CMP    eax,0
-    
-    ; numero deve estar com seu valor, e f a função deve retornar 1
-    
-    ;Impressão na tela
-    ; mov     [lido],eax
-    ; mov     eax, [tipolido]
-    ; push    eax
-    ; mov     eax, [numero]
-    ; push    eax
-    ; call    printf
-    
-    ; int fclose(FILE *string)
-    push DWORD[fp]
-    call fclose
-    add  esp,4
 
+scanf:
+    push    DWORD numero
+    push    DWORD inteiro
+    push    DWORD [fpi]
+    call    fscanf 
+    add     esp,12
+    
+    mov     DWORD [lido],eax
+    cmp     DWORD [lido], -1
+    je      fim 
+    
+printf:
+    push    DWORD [numero]
+    push    DWORD inteiro
+    push    DWORD [fpo]
+    call    fprintf
+    add     esp,12
+    
+    jne     scanf
+    ; jmp fim
+
+fim:    
+    ; int fclose(FILE *string)
+    push    DWORD[fpi]
+    call    fclose
+    add     esp,4
+
+    ; int fclose(FILE *string)
+    push    DWORD[fpo]
+    call    fclose
+    add     esp,4
+    
     ; void exit(int status);
     mov eax,1   ; numero da chamada ao sistema (exit)
     mov ebx,0   ; primeiro argumento: codigo de saida (sucesso)
@@ -70,9 +88,14 @@ seleciona_armstrong:
 
 section .data                     ; Declaração de variaveis.
 
-file_name: db "entrada", 0  ; alterar pra pegar do código C depois
-file_mode: db "r", 0
-tipolido : db "d", 0
+file_name:  db "entrada", 0  ; alterar pra pegar do código C depois
+out_name:   db "saida", 0
+read_mode:  db "r", 0
+write_mode: db "w", 0
+inteiro:    db "%d ",0
+
+o_pos:      db   12
+i_pos:      db   16
 
 ; endereço das varáveis a ser calculada
 
@@ -102,5 +125,8 @@ tipolido : db "d", 0
 section .bss
 
 numero:  resd   1
-fp:      resd   1
+fpi:     resd   1
+i_name:  resd   1
+fpo:     resd   1
+o_name:  resd   1
 lido:    resd   1
