@@ -14,6 +14,7 @@ int main(int argc, char **argv)
         double tempo_execucao; /* Tempo total de execução da função  */
     
     /** OPÇÕES ********************************************************/
+        printf("%d", argc);
         if(argc != 3) 
             printf("Erro: numero incorreto de argumentos\n");
         

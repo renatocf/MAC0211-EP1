@@ -1,8 +1,19 @@
+CC = gcc
+CFLAGS = -ansi -Wall -pedantic
+
+NASM = nasm
+NASMFLAGS = -f elf32
+
+RM = rm -f
+
 armstrong: seleciona_armstrong.o armstrong.o 
-	gcc -o $@ $^
+	$(CC) -o $@ $^
 
 seleciona_armstrong.o: seleciona_armstrong.asm
-	nasm -f elf32 $<
+	$(NASM) $(NASMFLAGS) $<
 
 armstrong.o: armstrong.c
-	gcc -ansi -Wall -pedantic -c $<
+	$(CC) $(CFLAGS) -c $<
+
+clean:
+	$(RM) *.o
