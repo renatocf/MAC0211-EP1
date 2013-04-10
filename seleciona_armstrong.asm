@@ -19,8 +19,9 @@ extern fprintf
 section .text
 seleciona_armstrong:
 
-    push    ebp
-    mov     ebp, esp
+    pusha               ; empilha valores dos registradores
+    push    ebp         ; empilha endereco da base da pilha
+    mov     ebp, esp    ; muda base da pilha
     ; sub     esp, 8
     ; mov eax,
 
@@ -38,11 +39,11 @@ seleciona_armstrong:
     mov     [fpo], eax ;
     add     esp,8
     
-    mov     eax,[ebp+o_pos]
-    mov     DWORD [o_name],eax
+    ; mov     eax,[ebp+o_pos]
+    ; mov     DWORD [o_name],eax
     
-    mov     eax,[ebp+i_pos]
-    mov     DWORD [i_name],eax
+    ; mov     eax,[ebp+i_pos]
+    ; mov     DWORD [i_name],eax
     
     ; Ponteiro para uma estruct *FILE vai ser retornado em EAX.
     ; add     esp, 8   ; libera o espaço usado pelos parametros de fopen
@@ -81,10 +82,15 @@ fim:
     call    fclose
     add     esp,4
     
+    ; restaura as condicoes iniciais
+    pop     eax      ; valor original de ebp em eax
+    xchg    ebp,eax  ; troca ebp com eax
+    popa             ; desempilha antigos valores dos registradores
+    
     ; void exit(int status);
-    mov eax,1   ; numero da chamada ao sistema (exit)
-    mov ebx,0   ; primeiro argumento: codigo de saida (sucesso)
-    int 80h     ; chamada ao nucleo do SO
+    mov     eax,1   ; numero da chamada ao sistema (exit)
+    mov     ebx,0   ; primeiro argumento: codigo de saida (sucesso)
+    int     80h     ; chamada ao nucleo do SO
 
 section .data                     ; Declaração de variaveis.
 
