@@ -12,9 +12,43 @@ extern fprintf
 
     ;push   dx
 
+    ;mov    EAX,[numero] 
+    ;mov    [quociente],EAX 	 ;quociente começa com o numero 	
+    ;mov    ECX,0
+
+;Conta os digitos e os empilha
+
+;loop:
+    ;mov    DWORD eax,[quociente];Armazena o conteudo de numero no reistrador eax
+    ;mov    EBX, 10		 ;Armazena 10 no EBX,que será usado como divisor
+    ;div    EBX			 ;Divide EAX por EBX,armazenando o quociente em EAX e o resto em EDX
+    ;push   EDX			 ;Empilha o resto que também é o digito
+    ;mov    quociente,eax	 ;Armazenda o quociente da divisão
+    ;add    EXC,[contadigito]
+    ;
+    ;cmp    quociente, 0 
+    ;jne    loop
+    
+;Calcula a soma dos digitos elevados ao valor armazenado em ECX,portanto não alterar ECX
+
+    ;mov    EBX,0
+
+;loop2:
+    ;pop   EAX ;EAX recebe o digito que tinha sido empilhado
+    ; exponencial?
+    ;add   EBX,EAX  ;supondo que EAX devolva o valor corretamente
+    ;usar uma variavel para determianr quantos digitos ainda faltam pra POP
+    ;comparar,se > 0 continuar, se = 0 sair de loop2
+
+    ;Comaprar numero com e EBX e verificar se é igual
+    ;se sim,de volver 1,caso contrário,-1.
+
     ;sub    esp, 40
 
-;_loop 
+;_exponencial:
+
+   
+
 
 section .text
 seleciona_armstrong:
@@ -56,6 +90,7 @@ scanf:
     push    DWORD [fpi]
     call    fscanf 
     add     esp,12
+    ;call    _calcula	; chamada de para verficar se é um numero de armstrong
     
     mov     DWORD [lido],eax
     cmp     DWORD [lido], -1
@@ -99,12 +134,14 @@ out_name:   db "saida", 0
 read_mode:  db "r", 0
 write_mode: db "w", 0
 inteiro:    db "%d ",0
+;contadigito   db 1,0
 
 o_pos:      db   12
 i_pos:      db   16
 
 ; endereço das varáveis a ser calculada
 
+;ndigitos: equ +12
 ;Digit1: equ  +16
 ;Digit2: equ  +20
 ;Digit3: equ  +24
@@ -130,6 +167,8 @@ i_pos:      db   16
 
 section .bss
 
+;quociente:	resd	1
+soma:	 resd   1
 numero:  resd   1
 fpi:     resd   1
 i_name:  resd   1
