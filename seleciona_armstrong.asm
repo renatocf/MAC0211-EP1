@@ -25,25 +25,25 @@ seleciona_armstrong:
     ; sub     esp, 8
     ; mov eax,
 
+    mov     ebx,[ebp+12]
+    mov     DWORD [o_name],ebx
+    
+    mov     eax,[ebp+16]
+    mov     DWORD [i_name],eax
+    
     ; Idêntico ao fopen(file_name, file_mode)
     push    read_mode
-    push    file_name
+    push    DWORD file_name 
     call    fopen
     mov     [fpi], eax ;
     add     esp,8
 
     ; Idêntico ao fopen(file_name, file_mode)
     push    write_mode
-    push    out_name
+    push    DWORD out_name 
     call    fopen
     mov     [fpo], eax ;
     add     esp,8
-    
-    ; mov     eax,[ebp+o_pos]
-    ; mov     DWORD [o_name],eax
-    
-    ; mov     eax,[ebp+i_pos]
-    ; mov     DWORD [i_name],eax
     
     ; Ponteiro para uma estruct *FILE vai ser retornado em EAX.
     ; add     esp, 8   ; libera o espaço usado pelos parametros de fopen
@@ -64,12 +64,14 @@ scanf:
 printf:
     push    DWORD [numero]
     push    DWORD inteiro
+    ; push    DWORD [o_name]
+    ; push    DWORD string
     push    DWORD [fpo]
     call    fprintf
     add     esp,12
     
+    ; Reiteracao
     jne     scanf
-    ; jmp fim
 
 fim:    
     ; int fclose(FILE *string)
@@ -99,6 +101,7 @@ out_name:   db "saida", 0
 read_mode:  db "r", 0
 write_mode: db "w", 0
 inteiro:    db "%d ",0
+string :    db "%s ",0
 
 o_pos:      db   12
 i_pos:      db   16
