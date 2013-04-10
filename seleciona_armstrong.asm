@@ -5,29 +5,48 @@ extern fclose
 extern fscanf
 extern fprintf
 
-;_calcula: retorna 0 se não for,e 1 se for
+_calcula: ;retorna 0 se não for,e 1 se for
 
-    ;push   ebp
-    ;mov    ebp, esp
+    push   ebp
+    mov    ebp, esp
 
-    ;push   dx
+    push   dx
 
-    ;mov    EAX,[numero] 
-    ;mov    [quociente],EAX 	 ;quociente começa com o numero 	
-    ;mov    ECX,0
-
+    mov    EAX,[numero]          ;armazena o numero no registrador
+    mov    [quociente],EAX 	 ;quociente começa com o numero 
+    mov    ECX,0                 ;inicializa o contador de digitos
+     
 ;Conta os digitos e os empilha
+;Até aqui funciona
 
-;loop:
-    ;mov    DWORD eax,[quociente];Armazena o conteudo de numero no reistrador eax
-    ;mov    EBX, 10		 ;Armazena 10 no EBX,que será usado como divisor
-    ;div    EBX			 ;Divide EAX por EBX,armazenando o quociente em EAX e o resto em EDX
-    ;push   EDX			 ;Empilha o resto que também é o digito
-    ;mov    quociente,eax	 ;Armazenda o quociente da divisão
-    ;add    EXC,[contadigito]
-    ;
-    ;cmp    quociente, 0 
-    ;jne    loop
+conta_digitos:
+    mov    DWORD EDX,0
+    mov    DWORD EAX,[quociente] 	 ;Armazena o conteudo de numero no reistrador eax
+    mov    DWORD EBX, 10d		 ;Armazena 10 no EBX,que será usado como divisor
+    div    DWORD EBX		 	 ;Divide EAX por EBX,armazenando o quociente em EAX e o resto em EDX
+    ;push   EDX			 	 ;Empilha o resto que também é o digito
+    mov    DWORD [quociente],EAX	 ;Armazenda o quociente da divisão
+    inc    DWORD ECX
+    cmp    DWORD [quociente], 0 
+    jne    conta_digitos
+
+    mov    [ndigitos],ECX        ;Apenas para impressão?
+
+
+
+    printf:
+    push    DWORD [ndigitos]
+    push    DWORD inteiro
+    push    DWORD [fpo]
+    call    fprintf
+    add     esp,12
+
+    pop    dx
+    pop    ebp
+
+    ret  
+
+;FIM DE TESTE ATE AQUI
     
 ;Calcula a soma dos digitos elevados ao valor armazenado em ECX,portanto não alterar ECX
 
@@ -44,6 +63,12 @@ extern fprintf
     ;se sim,de volver 1,caso contrário,-1.
 
     ;sub    esp, 40
+
+    ;pop    dx
+    ;pop    ebp
+
+    ;ret    
+     		
 
 ;_exponencial:
 
@@ -90,18 +115,18 @@ scanf:
     push    DWORD [fpi]
     call    fscanf 
     add     esp,12
-    ;call    _calcula	; chamada de para verficar se é um numero de armstrong
-    
+    mov     [ndigitos], ECX    
     mov     DWORD [lido],eax
     cmp     DWORD [lido], -1
     je      fim 
     
-printf:
-    push    DWORD [numero]
-    push    DWORD inteiro
-    push    DWORD [fpo]
-    call    fprintf
-    add     esp,12
+;printf:
+    call    _calcula	; chamada de para verficar se é um numero de armstrong
+;    push    DWORD [numero]
+ ;   push    DWORD inteiro
+;    push    DWORD [fpo]
+;    call    fprintf
+;    add     esp,12
     
     jne     scanf
     ; jmp fim
@@ -134,7 +159,7 @@ out_name:   db "saida", 0
 read_mode:  db "r", 0
 write_mode: db "w", 0
 inteiro:    db "%d ",0
-;contadigito   db 1,0
+contadigito db 1,0
 
 o_pos:      db   12
 i_pos:      db   16
@@ -167,7 +192,8 @@ i_pos:      db   16
 
 section .bss
 
-;quociente:	resd	1
+ndigitos:	resd    1
+quociente:	resd	1
 soma:	 resd   1
 numero:  resd   1
 fpi:     resd   1
