@@ -1,3 +1,17 @@
+/******************************************************/
+/**  MAC 0211  -  Introdução à  Computação           **/
+/**  IME-USP   -  Primeiro  Semestre  de    2012     **/
+/**  Turma 45  -  Kelly Rosa Bragheto                **/
+/**                                                  **/
+/**  Primeiro  Exercício-Programa                    **/
+/**  Arquivo:  armstrong.c                           **/
+/**                                                  **/
+/**  Renato Cordeiro Ferreira            7990933     **/
+/**  Diego Martos                        6880528     **/
+/**                                                  **/
+/**  10/04/13                                        **/
+/******************************************************/ 
+
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
@@ -8,13 +22,12 @@ int seleciona_armstrong(char *nome_arq_entrada, char *nome_arq_saida);
 int main(int argc, char **argv)
 {
     /** VARIÁVEIS *****************************************************/
-        int debug = 0;         /* Opção para debug                   */
+        int debug = 1;         /* Opção para debug                   */
         int armstrongs;        /* Resultado de seleciona_armstrongs  */
         clock_t inicio, fim;   /* Variáveis para tempo de início/fim */
         double tempo_execucao; /* Tempo total de execução da função  */
     
     /** OPÇÕES ********************************************************/
-        printf("%d", argc);
         if(argc != 3) 
             printf("Erro: numero incorreto de argumentos\n");
         
